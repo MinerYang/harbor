@@ -20,7 +20,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang-jwt/jwt/v5"
 
 	"github.com/goharbor/harbor/src/lib/log"
 )
@@ -34,10 +34,14 @@ type Token struct {
 
 // New ...
 func New(opt *Options, claims jwt.Claims) (*Token, error) {
-	err := claims.Valid()
-	if err != nil {
+	v := jwt.NewValidator()
+	if err := v.Validate(claims); err != nil {
 		return nil, err
 	}
+	// err := claims.Valid()
+	// if err != nil {
+	// 	return nil, err
+	// }
 	return &Token{
 		Token: *jwt.NewWithClaims(opt.SignMethod, claims),
 		Opt:   opt,

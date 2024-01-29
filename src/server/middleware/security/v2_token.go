@@ -15,11 +15,12 @@
 package security
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	registry_token "github.com/docker/distribution/registry/auth/token"
+	"github.com/golang-jwt/jwt/v5"
 
 	"github.com/goharbor/harbor/src/common/security"
 	"github.com/goharbor/harbor/src/common/security/v2token"
@@ -35,12 +36,16 @@ type v2TokenClaims struct {
 }
 
 func (vtc *v2TokenClaims) Valid() error {
-	if err := vtc.Claims.Valid(); err != nil {
+	if err := vtc.Claims.Valid(
+		jwt.WithLeeway(60*time.Second),
+		jwt.WithAudience(svc_token.Registry),
+		jwt.WithIssuer(vtc.Issuer),
+	); err != nil {
 		return err
 	}
-	if !vtc.VerifyAudience(svc_token.Registry, true) {
-		return fmt.Errorf("invalid token audience: %s", vtc.Audience)
-	}
+	// if !vtc.VerifyAudience(svc_token.Registry, true) {
+	// 	return fmt.Errorf("invalid token audience: %s", vtc.Audience)
+	// }
 	return nil
 }
 

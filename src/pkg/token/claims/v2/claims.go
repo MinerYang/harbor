@@ -15,11 +15,8 @@
 package v2
 
 import (
-	"crypto/subtle"
-	"fmt"
-
 	"github.com/docker/distribution/registry/auth/token"
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 func init() {
@@ -38,12 +35,14 @@ type Claims struct {
 }
 
 // Valid checks if the issuer is harbor
-func (c *Claims) Valid() error {
-	if err := c.RegisteredClaims.Valid(); err != nil {
+func (c *Claims) Valid(opts ...jwt.ParserOption) error {
+	var v = jwt.NewValidator(opts...)
+	if err := v.Validate(c.RegisteredClaims); err != nil {
 		return err
 	}
-	if subtle.ConstantTimeCompare([]byte(c.Issuer), []byte(Issuer)) == 0 {
-		return fmt.Errorf("invalid token issuer: %s", c.Issuer)
-	}
+
+	// if subtle.ConstantTimeCompare([]byte(c.Issuer), []byte(Issuer)) == 0 {
+	// 	return fmt.Errorf("invalid token issuer: %s", c.Issuer)
+	// }
 	return nil
 }

@@ -30,7 +30,7 @@ require (
 	github.com/go-redis/redis/v8 v8.11.4
 	github.com/gocarina/gocsv v0.0.0-20210516172204-ca9e8a8ddea8
 	github.com/gocraft/work v0.5.1
-	github.com/golang-jwt/jwt/v4 v4.5.0
+	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
 	github.com/golang-migrate/migrate/v4 v4.16.2
 	github.com/gomodule/redigo v2.0.0+incompatible
 	github.com/google/uuid v1.3.1
@@ -76,6 +76,8 @@ require (
 	k8s.io/client-go v0.29.0
 	sigs.k8s.io/yaml v1.4.0
 )
+
+require github.com/golang-jwt/jwt/v5 v5.2.0
 
 require (
 	cloud.google.com/go/compute v1.23.0 // indirect
